@@ -1,0 +1,162 @@
+.date-swiper {
+  position: absolute;
+  padding: 0;
+  overflow: hidden;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  font-size: 5vmin; }
+  .date-swiper ul {
+    padding: 0;
+    margin: 0;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: row;
+        -ms-flex-direction: row;
+            flex-direction: row;
+    -webkit-flex-wrap: wrap;
+        -ms-flex-wrap: wrap;
+            flex-wrap: wrap; }
+    .date-swiper ul li {
+      list-style-type: none;
+      padding: .2em 0;
+      -webkit-box-flex: 0;
+      -webkit-flex: 0 0 14.285714286%;
+          -ms-flex: 0 0 14.285714286%;
+              flex: 0 0 14.285714286%; }
+  .date-swiper .carousel {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: row;
+        -ms-flex-direction: row;
+            flex-direction: row; }
+    .date-swiper .carousel.animate {
+      -webkit-transition: -webkit-transform 0.3s;
+              transition: transform 0.3s; }
+    .date-swiper .carousel.dragging li {
+      pointer-events: none; }
+  .date-swiper .month {
+    -webkit-box-flex: 1;
+    -webkit-flex: 1 0 100vw;
+        -ms-flex: 1 0 100vw;
+            flex: 1 0 100vw;
+    padding: .5em; }
+  .date-swiper .month-name {
+    font-size: 1.2em;
+    padding: .5em; }
+  .date-swiper .days {
+    text-align: center;
+    font-size: 1em;
+    line-height: 2; }
+  .date-swiper .date {
+    padding: 0;
+    border-radius: 100%;
+    margin: .3em auto;
+    width: 2em;
+    height: 2em;
+    pointer-events: none; }
+
+.date-swiper .toggle {
+  bottom: 1rem;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+      -ms-transform: translateX(-50%);
+          transform: translateX(-50%);
+  padding: 0;
+  position: absolute;
+  z-index: 5;
+  height: 2.5rem;
+  width: 2.5rem;
+  line-height: 1;
+  border-radius: 100%; }
+  .date-swiper .toggle::before, .date-swiper .toggle::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    padding: 1px .65em;
+    -webkit-transform-origin: center;
+        -ms-transform-origin: center;
+            transform-origin: center; }
+  .date-swiper .toggle::before {
+    -webkit-transform: translate(-50%, -50%) rotate(45deg);
+        -ms-transform: translate(-50%, -50%) rotate(45deg);
+            transform: translate(-50%, -50%) rotate(45deg); }
+  .date-swiper .toggle::after {
+    -webkit-transform: translate(-50%, -50%) rotate(-45deg);
+        -ms-transform: translate(-50%, -50%) rotate(-45deg);
+            transform: translate(-50%, -50%) rotate(-45deg); }
+
+@-webkit-keyframes bgBlend {
+  0% {
+    background-position: 50% 0%; }
+  50% {
+    background-position: 51% 100%; }
+  100% {
+    background-position: 50% 0%; } }
+
+@keyframes bgBlend {
+  0% {
+    background-position: 50% 0%; }
+  50% {
+    background-position: 51% 100%; }
+  100% {
+    background-position: 50% 0%; } }
+.date-swiper {
+  z-index: 5;
+  background: #23292C;
+  color: #f3f4f5;
+  -webkit-transform: translate3d(0%, 100%, 0);
+          transform: translate3d(0%, 100%, 0);
+  -webkit-transition: -webkit-transform .3s ease-out;
+          transition: transform .3s ease-out; }
+  .date-swiper.is-active {
+    -webkit-transform: translate3d(0%, 0%, 0);
+            transform: translate3d(0%, 0%, 0); }
+  .date-swiper .month {
+    background: #00BCD4; }
+  .date-swiper .month-name {
+    text-transform: uppercase; }
+  .date-swiper .month-year {
+    opacity: .5; }
+  .date-swiper .day-names {
+    text-transform: uppercase;
+    font-size: .7em;
+    border-top: .2em dotted;
+    border-bottom: .2em dotted;
+    color: rgba(35, 41, 44, 0.2);
+    line-height: 1.5; }
+  .date-swiper .day-in-prev-month,
+  .date-swiper .day-in-next-month {
+    opacity: .5; }
+  .date-swiper .is-today .date {
+    background: rgba(35, 41, 44, 0.2); }
+  .date-swiper .is-selected .date {
+    background: #f06292;
+    color: #f3f4f5;
+    box-shadow: 0 0 0 .15em; }
+  .date-swiper .toggle {
+    background: rgba(226, 228, 230, 0.2);
+    color: #f3f4f5; }
+    .date-swiper .toggle::before, .date-swiper .toggle::after {
+      background: currentColor; }
+
+/*# sourceMappingURL=date-swiper.css.map */

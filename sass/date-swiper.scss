@@ -1,0 +1,155 @@
+@import 'variables';
+
+// structural/functional
+.date-swiper {
+  position: absolute;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  font-size: 5vmin;
+
+  // important structure
+  ul {
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    li {
+      list-style-type: none;
+      padding: .2em 0;
+      flex: 0 0 14.285714286%;
+    }
+  }
+  .carousel {
+    display: flex;
+    flex-direction: row;
+    // important interactions
+    &.animate {
+      transition: transform 0.3s;
+    }
+    &.dragging {
+      li {
+        pointer-events: none;
+      }
+    }
+  }
+  .month {
+    flex: 1 0 100vw;
+    padding: .5em;
+    // z-index: 0;
+    &.month-2 {
+      // z-index: 1;
+    }
+  }
+  .month-name {
+    font-size: 1.2em;
+    padding: .5em;
+  }
+  .days {
+    text-align: center;
+    font-size: 1em;
+    line-height: 2;
+  }
+  .date {
+    padding: 0;
+    border-radius: 100%;
+    margin: .3em auto;
+    width: 2em;
+    height: 2em;
+    pointer-events: none;
+  }
+}
+
+// closer trigger
+.date-swiper .toggle {
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0;
+  position: absolute;
+  z-index: 5;
+  height: 2.5rem;
+  width: 2.5rem;
+  line-height: 1;
+  border-radius: 100%;
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    padding: 1px .65em;
+    transform-origin: center;
+  }
+  &::before {
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+  &::after {
+    transform: translate(-50%, -50%) rotate(-45deg);
+  }
+}
+
+@keyframes bgBlend {
+    0%{background-position:50% 0%}
+    50%{background-position:51% 100%}
+    100%{background-position:50% 0%}
+}
+
+// Theme/Design related
+.date-swiper {
+  z-index: 5;
+  background: $dark;
+  color: $lighter;
+
+  // important interaction
+  transform: translate3d(0%, 100%, 0);
+  transition: transform .3s ease-out;
+  &.is-active {
+    transform: translate3d(0%, 0%, 0);
+  }
+  .month {
+    background: $base;
+    // fancypants
+    // background: linear-gradient(0deg, $base, $alert);
+    // background-size: 400% 400%;
+    // animation: bgBlend 18s ease infinite;
+  }
+  .month-name {text-transform: uppercase;}
+  .month-year {opacity: .5;}
+  .day-names {
+    text-transform: uppercase;
+    font-size: .7em;
+    border-top: .2em dotted;
+    border-bottom: .2em dotted;
+    color: rgba($dark, .2);
+    line-height: 1.5;
+  }
+  .day-in-curr-month {}
+  .day-in-prev-month,
+  .day-in-next-month {
+    opacity: .5;
+  }
+  .is-today .date {background: rgba($dark, .2);}
+  .is-weekend {}
+  .is-selected {
+    .date {
+      background: $alert;
+      color: $lighter;
+      box-shadow: 0 0 0 .15em;
+    }
+  }
+  .toggle {
+    background: rgba($light, .2);
+    color: $lighter;
+    &::before,
+    &::after {
+      background: currentColor;
+    }
+  }
+}

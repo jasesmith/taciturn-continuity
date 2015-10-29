@@ -1,0 +1,25 @@
+{
+  "name": "Taciturn Continuity",
+  "version": "0.0.1",
+  "homepage": "https://github.com/jasesmith/taciturn-continuity",
+  "authors": [
+    "Jase <jase@star29.com>"
+  ],
+  "description": "An Angular + CSS Calendar date swiper picker directive.",
+  "main": "index.html",
+  "moduleType": [
+    "globals"
+  ],
+  "license": "The Unlicense",
+  "ignore": [
+    "**/.*",
+    "*codekit*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jamfu": "https://github.com/jasesmith/jamfu.git"
+  }
+}

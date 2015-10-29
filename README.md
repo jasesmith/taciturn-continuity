@@ -1,2 +1,2 @@
 # taciturn-continuity
-An Angular + CSS swiper date picker directive.
+An Angular + CSS Calendar date swiper picker directive.

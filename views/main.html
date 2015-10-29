@@ -1,0 +1,6 @@
+<section>
+  <a href="#/" ng-click="showCalendar()">show calendar</a>
+  <p>Date: {{date | date: 'fullDate'}}</p>
+  {{calendarConfig}}
+</section>
+<date-swiper config="calendarConfig" date="date"></date-swiper>

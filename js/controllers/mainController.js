@@ -2,30 +2,34 @@
     'use strict';
 
     $angular.module('app')
-    .controller('mainController', ['$rootScope', '$scope', 'system', 'UtilityService', function($rootScope, $scope, system, utils){
+    .controller('mainController', ['$rootScope', '$scope', function($rootScope, $scope){
 
-        $scope.calendarConfig = {
-            prefix: system.prefix,
-            show: true,
-            // seeds: 3,
-            // start: '2015-10-31',// $moment(), //.valueOf(), // unix offset in milliseconds
-            // end: false
+        $scope.cal = {
+            prefix: 'swiper',
+            show: false
+        };
+
+        $scope.showCalendar = function(date){
+          $rootScope.$emit($scope.cal.prefix + ':show', date);
+        };
+
+        $scope.setDate = function(date){
+          $rootScope.$emit($scope.cal.prefix + ':set', date);
+        };
+
+        $scope.hideCalendar = function(){
+          $rootScope.$emit($scope.cal.prefix + ':hide');
         };
 
         var init = function(){
-          $scope.date = null; //$moment();
-          $rootScope.$emit(system.prefix + 'set-date', $scope.date);
+          $scope.date = null; //false; //'2015-10-31'; //new Date(); //$moment().valueOf(); //null; //$moment();
+          $scope.showCalendar($scope.date);
         };
 
         init();
 
-        $scope.showCalendar = function(){
-          $scope.calendarConfig.show = true;
-        };
-
-        $rootScope.$on(system.prefix + 'date', function(e, date){
+        $rootScope.$on($scope.cal.prefix + ':date', function(e, date){
             $scope.date = date;
-            // $scope.calendarConfig.start = date;
         });
 
     }]);

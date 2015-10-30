@@ -118,7 +118,6 @@
 
       template: '' +
         '<div class="date-swiper" ng-class="{\'is-active\': config.show}">' +
-          '<div class="toggle"></div>' +
           '<div class="carousel">' +
 
             '<div class="month month-{{$index+1}} month-{{m.currYear}}-{{m.currMonth}}" ng-repeat="m in months">' +
@@ -147,6 +146,7 @@
             '</div>' +
 
           '</div>' +
+          '<div class="toggle"></div>' +
         '</div>' +
       '',
 
@@ -160,6 +160,7 @@
         var swiper = $angular.element(element[0]);
         var carousel = $angular.element(element[0].querySelector('.carousel'));
         var toggle = $angular.element(element[0].querySelector('.toggle'));
+        var signature = scope.config.prefix || 'date-swiper';
         var _snaps = [
           {key: 0, value: 0 },
           {key: 1, value: -100 },
@@ -169,10 +170,23 @@
         // STUFF ON SCOPE
         // ---------------------------------------------------------------------
 
+        var _tryFuzzyDates = function(date){
+          if(date === 'today') {
+            date = today;
+          }
+          if(date === 'tomorrow') {
+            date = $moment(today).add(1, 'day');
+          }
+          if(date === 'yesterday') {
+            date = $moment(today).subtract(1, 'day');
+          }
+          return date;
+        };
+
         // When a user clicks on the date make it "active"
         var setActiveDate = function(date) {
-          scope.date = $moment(date).valueOf();
-          $rootScope.$emit(scope.config.prefix + 'date', scope.date);
+          scope.date = $moment(date).isValid() ? $moment(date).format(dFormat) : _tryFuzzyDates(date);
+          $rootScope.$emit(signature + ':date', scope.date);
         };
 
         var _bindHammerDays = function(){
@@ -200,7 +214,6 @@
         var init = function() {
           scope.bound = [];
           scope.dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-          scope.date = $moment(scope.date).isValid() ? $moment(scope.date).valueOf() : $moment().valueOf();
           scope.months = _generateMonths(scope.date);
           scope.snap = _snaps[1];
 
@@ -268,17 +281,17 @@
           carousel.addClass('animate').css({transform: 'translate3d(' + scope.snap.value + 'vw, 0, 0)'});
 
           // unbind taps, regenerate calendars, and rebind taps
-          $timeout(function(){
-            if(prevSnapKey !== scope.snap.key && scope.snap.key !== 1) {
-              _unbindHammerDays();
-              scope.months = _generateMonths($moment([_c.currYear, _c.currMonth-1]).valueOf());
-              $timeout(function(){
-                scope.snap = _snaps[1];
-                carousel.removeClass('animate').css({transform: 'translate3d(' + scope.snap.value + 'vw, 0, 0)'});
-                _bindHammerDays();
-              }, 10);
-            }
-          }, 300);
+          if(prevSnapKey !== scope.snap.key && scope.snap.key !== 1) {
+            $timeout(function(){
+                _unbindHammerDays();
+                scope.months = _generateMonths($moment([_c.currYear, _c.currMonth-1]).valueOf());
+            }, 35);
+            $timeout(function(){
+              scope.snap = _snaps[1];
+              carousel.removeClass('animate').css({transform: 'translate3d(' + scope.snap.value + 'vw, 0, 0)'});
+              _bindHammerDays();
+            }, 65);
+          }
 
           scope.$apply();
         });
@@ -295,19 +308,32 @@
 
         // LISTEN FOR THINGS
         // ---------------------------------------------------------------------
-        $rootScope.$on(scope.config.prefix + 'set-date', function(e, date){
-            setActiveDate(date);
+        $rootScope.$on(signature + ':set', function(e, date){
+          window.console.log('SET DATE', date);
+          setActiveDate(date);
+        });
+
+        $rootScope.$on(signature + ':show', function(e, date){
+          window.console.log('SHOW', date);
+          setActiveDate(date);
+          scope.config.show = true;
+        });
+
+        $rootScope.$on(signature + ':hide', function(){
+          scope.config.show = false;
         });
 
         // WATCH THINGS
         // ---------------------------------------------------------------------
-        scope.$watch('config', function(value){
-          return value;
-        });
+        // scope.$watch('config', function(value){
+        //   return value;
+        // });
 
         scope.$watch('date', function(value){
-          window.console.log('watch:', value);
-          scope.date = $moment(value).format(dFormat);
+          if(value) {
+            window.console.log('watch:', value);
+            scope.date = $moment(value).isValid() ? $moment(value).format(dFormat) : value;
+          }
         });
 
         init();

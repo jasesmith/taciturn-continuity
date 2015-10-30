@@ -1,6 +1,9 @@
 <section>
-  <a href="#/" ng-click="showCalendar()">show calendar</a>
+  <a href="#/" ng-click="showCalendar(date)">show</a> |
+  <a href="#/" ng-click="showCalendar('today')">show today</a> |
+  <a href="#/" ng-click="showCalendar('tomorrow')">show tomorrow</a> |
+  <a href="#/" ng-click="setDate('yesterday')">set yesterday</a>
   <p>Date: {{date | date: 'fullDate'}}</p>
-  {{calendarConfig}}
+  {{cal}}
 </section>
-<date-swiper config="calendarConfig" date="date"></date-swiper>
+<date-swiper config="cal" date="date"></date-swiper>

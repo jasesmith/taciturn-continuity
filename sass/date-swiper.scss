@@ -33,19 +33,10 @@
     &.animate {
       transition: transform 0.3s;
     }
-    &.dragging {
-      li {
-        pointer-events: none;
-      }
-    }
   }
   .month {
     flex: 1 0 100vw;
     padding: .5em;
-    // z-index: 0;
-    &.month-2 {
-      // z-index: 1;
-    }
   }
   .month-name {
     font-size: 1.2em;
@@ -70,10 +61,10 @@
 .date-swiper .toggle {
   bottom: 1rem;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate3d(-50%, 0, 0);
   padding: 0;
   position: absolute;
-  z-index: 5;
+  z-index: 10;
   height: 2.5rem;
   width: 2.5rem;
   line-height: 1;
@@ -121,31 +112,31 @@
     // animation: bgBlend 18s ease infinite;
   }
   .month-name {text-transform: uppercase;}
-  .month-year {opacity: .5;}
+  .month-year {opacity: .65;}
   .day-names {
     text-transform: uppercase;
     font-size: .7em;
-    border-top: .2em dotted;
-    border-bottom: .2em dotted;
-    color: rgba($dark, .2);
+    border-top: .1em solid;
+    border-bottom: .1em solid;
+    color: rgba($dark, .5);
     line-height: 1.5;
   }
   .day-in-curr-month {}
   .day-in-prev-month,
   .day-in-next-month {
-    opacity: .5;
+    opacity: .65;
   }
-  .is-today .date {background: rgba($dark, .2);}
+  .is-today .date {background: rgba($dark, .25);}
   .is-weekend {}
   .is-selected {
     .date {
       background: $alert;
       color: $lighter;
-      box-shadow: 0 0 0 .15em;
+      box-shadow: 0 0 0 .1em;
     }
   }
   .toggle {
-    background: rgba($light, .2);
+    background: rgba($dark, .5);
     color: $lighter;
     &::before,
     &::after {

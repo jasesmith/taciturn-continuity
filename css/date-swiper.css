@@ -51,8 +51,6 @@
     .date-swiper .carousel.animate {
       -webkit-transition: -webkit-transform 0.3s;
               transition: transform 0.3s; }
-    .date-swiper .carousel.dragging li {
-      pointer-events: none; }
   .date-swiper .month {
     -webkit-box-flex: 1;
     -webkit-flex: 1 0 100vw;
@@ -77,12 +75,11 @@
 .date-swiper .toggle {
   bottom: 1rem;
   left: 50%;
-  -webkit-transform: translateX(-50%);
-      -ms-transform: translateX(-50%);
-          transform: translateX(-50%);
+  -webkit-transform: translate3d(-50%, 0, 0);
+          transform: translate3d(-50%, 0, 0);
   padding: 0;
   position: absolute;
-  z-index: 5;
+  z-index: 10;
   height: 2.5rem;
   width: 2.5rem;
   line-height: 1;
@@ -136,25 +133,25 @@
   .date-swiper .month-name {
     text-transform: uppercase; }
   .date-swiper .month-year {
-    opacity: .5; }
+    opacity: .65; }
   .date-swiper .day-names {
     text-transform: uppercase;
     font-size: .7em;
-    border-top: .2em dotted;
-    border-bottom: .2em dotted;
-    color: rgba(35, 41, 44, 0.2);
+    border-top: .1em solid;
+    border-bottom: .1em solid;
+    color: rgba(35, 41, 44, 0.5);
     line-height: 1.5; }
   .date-swiper .day-in-prev-month,
   .date-swiper .day-in-next-month {
-    opacity: .5; }
+    opacity: .65; }
   .date-swiper .is-today .date {
-    background: rgba(35, 41, 44, 0.2); }
+    background: rgba(35, 41, 44, 0.25); }
   .date-swiper .is-selected .date {
     background: #f06292;
     color: #f3f4f5;
-    box-shadow: 0 0 0 .15em; }
+    box-shadow: 0 0 0 .1em; }
   .date-swiper .toggle {
-    background: rgba(226, 228, 230, 0.2);
+    background: rgba(35, 41, 44, 0.5);
     color: #f3f4f5; }
     .date-swiper .toggle::before, .date-swiper .toggle::after {
       background: currentColor; }

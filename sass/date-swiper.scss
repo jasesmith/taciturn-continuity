@@ -12,6 +12,7 @@
   right: 0;
   bottom: 0;
   font-size: 5vmin;
+  font-family: "DIN Alternate", sans-serif;
 
   // important structure
   ul {
@@ -29,14 +30,16 @@
   .carousel {
     display: flex;
     flex-direction: row;
+    position: relative;
     // important interactions
     &.animate {
-      transition: transform 0.3s;
+      transition: transform 300ms ease-out;
     }
   }
   .month {
     flex: 1 0 100vw;
     padding: .5em;
+    position: relative;
   }
   .month-name {
     font-size: 1.2em;
@@ -100,7 +103,7 @@
 
   // important interaction
   transform: translate3d(0%, 100%, 0);
-  transition: transform .3s ease-out;
+  transition: transform 300ms ease-out;
   &.is-active {
     transform: translate3d(0%, 0%, 0);
   }

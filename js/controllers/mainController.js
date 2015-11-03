@@ -4,31 +4,31 @@
     $angular.module('app')
     .controller('mainController', ['$rootScope', '$scope', function($rootScope, $scope){
 
-        $scope.cal = {
+        $scope.config = {
             prefix: 'swiper',
-            show: false
+            show: true
         };
 
         $scope.showCalendar = function(date){
-          $rootScope.$emit($scope.cal.prefix + ':show', date);
+          $rootScope.$emit($scope.config.prefix + ':show', date);
         };
 
         $scope.setDate = function(date){
-          $rootScope.$emit($scope.cal.prefix + ':set', date);
+          $rootScope.$emit($scope.config.prefix + ':set', date);
         };
 
         $scope.hideCalendar = function(){
-          $rootScope.$emit($scope.cal.prefix + ':hide');
+          $rootScope.$emit($scope.config.prefix + ':hide');
         };
 
         var init = function(){
-          $scope.date = null; //false; //'2015-10-31'; //new Date(); //$moment().valueOf(); //null; //$moment();
+          $scope.date = 'today'; //'2015-10-31'; //new Date(); //$moment().valueOf(); //null; //$moment();
           $scope.showCalendar($scope.date);
         };
 
         init();
 
-        $rootScope.$on($scope.cal.prefix + ':date', function(e, date){
+        $rootScope.$on($scope.config.prefix + ':date', function(e, date){
             $scope.date = date;
         });
 

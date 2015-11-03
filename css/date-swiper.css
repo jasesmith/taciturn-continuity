@@ -15,7 +15,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  font-size: 5vmin; }
+  font-size: 5vmin;
+  font-family: "DIN Alternate", sans-serif; }
   .date-swiper ul {
     padding: 0;
     margin: 0;
@@ -47,16 +48,18 @@
     -webkit-box-direction: normal;
     -webkit-flex-direction: row;
         -ms-flex-direction: row;
-            flex-direction: row; }
+            flex-direction: row;
+    position: relative; }
     .date-swiper .carousel.animate {
-      -webkit-transition: -webkit-transform 0.3s;
-              transition: transform 0.3s; }
+      -webkit-transition: -webkit-transform 300ms ease-out;
+              transition: transform 300ms ease-out; }
   .date-swiper .month {
     -webkit-box-flex: 1;
     -webkit-flex: 1 0 100vw;
         -ms-flex: 1 0 100vw;
             flex: 1 0 100vw;
-    padding: .5em; }
+    padding: .5em;
+    position: relative; }
   .date-swiper .month-name {
     font-size: 1.2em;
     padding: .5em; }
@@ -123,8 +126,8 @@
   color: #f3f4f5;
   -webkit-transform: translate3d(0%, 100%, 0);
           transform: translate3d(0%, 100%, 0);
-  -webkit-transition: -webkit-transform .3s ease-out;
-          transition: transform .3s ease-out; }
+  -webkit-transition: -webkit-transform 300ms ease-out;
+          transition: transform 300ms ease-out; }
   .date-swiper.is-active {
     -webkit-transform: translate3d(0%, 0%, 0);
             transform: translate3d(0%, 0%, 0); }

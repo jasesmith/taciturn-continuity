@@ -2,9 +2,43 @@
   'use strict';
 
   $angular.module('app')
+  .directive('tap', [function() {
+    return function(scope, element, attr) {
+      var hammerTap = new Hammer(element[0], {});
+      hammerTap.on('tap', function() {
+        scope.$apply(function() {
+          scope.$eval(attr.tap);
+        });
+      });
+    };
+  }])
   .directive('dateSwiper', ['$rootScope', '$timeout', function($rootScope, $timeout) {
-
     var dFormat = 'YYYY-MM-DD';
+    var today = $moment().format(dFormat);
+
+    // get the snap location at 'panend' for where to animate the carousel
+    var _calculateSnapPoint = function(pos) {
+        var diff; // difference between pos and snap value
+        var min; // smallest difference
+        var key; // best snap key
+        var value; // best snap value
+
+        // loop to find smallest diff, it is closest to the pos
+        _.times(3, function(n){
+            var snap = n > 0 ? n * -100 : 0;
+            diff = Math.abs(pos - snap);
+            if (_.isUndefined(min) || diff < min) {
+                min = diff;
+                key = n;
+                value = snap;
+            }
+        });
+
+        return {
+            key: key,
+            value: value
+        };
+    };
 
     var _buildDayObject = function(y,m,d){
       var _d = $moment([y, m, d]);
@@ -17,21 +51,20 @@
 
     var _calendarData = function(date){
       var _key = $moment(date).startOf('month');
-      // window.console.log('\ncal data:', _key._d);
       // setup 'current' month days
       var _y = _key.year();
       var _m = _key.month();
       var n = _key.format('MMMM');
       var d = [];
       // setup prev month backfill days
-      var _p = $moment(_key).subtract(1, 'month'); //.month();
+      var _p = $moment(_key).subtract(1, 'month');
       var _psd = _key.isoWeekday();
       var _pd = [];
       var pd = [];
       var _pi = 0;
       var _pj = _p.daysInMonth();
       // setup next month postfill days
-      var _n = $moment(_key).add(1, 'month'); //.month();
+      var _n = $moment(_key).add(1, 'month');
       var _nsd = 1;
       var _t = 0;
       var _nd = [];
@@ -73,31 +106,7 @@
       };
     };
 
-    // get the snap location at 'panend' for where to animate the calendar
-    var _calculateSnapPoint = function(position) {
-        var currDiff; // store each difference between the current position and each snap value
-        var minDiff; // store the smallest difference
-        var snapKey; // store the best snap key
-        var snapValue; // store the best snap value
-
-        // loop to find which snap point (value) is closest to the given position
-        _.times(3, function(n){
-            var snap = n > 0 ? n * -100 : 0;
-            currDiff = Math.abs(position - snap);
-            if (_.isUndefined(minDiff) || currDiff < minDiff) {
-                minDiff = currDiff;
-                snapKey = n;
-                snapValue = snap;
-            }
-        });
-
-        return {
-            key: snapKey,
-            value: snapValue
-        };
-    };
-
-    // construct calendar data for 3 months: current (date) month, previous, and next
+    // construct calendar data for 3 months: current/given month, previous, and next
     var _generateMonths = function(date){
       var m = [];
       date = $moment(date).isValid() ? $moment(date).valueOf() : $moment().valueOf();
@@ -105,6 +114,19 @@
       m.push(_calendarData($moment(date)));
       m.push(_calendarData($moment(date).add(1, 'month')));
       return m;
+    };
+
+    var _tryFuzzyDates = function(date){
+      if(date === 'today') {
+        date = today;
+      }
+      if(date === 'tomorrow') {
+        date = $moment(today).add(1, 'day');
+      }
+      if(date === 'yesterday') {
+        date = $moment(today).subtract(1, 'day');
+      }
+      return date;
     };
 
     return {
@@ -120,25 +142,25 @@
         '<div class="date-swiper" ng-class="{\'is-active\': config.show}">' +
           '<div class="carousel">' +
 
-            '<div class="month month-{{$index+1}} month-{{m.currYear}}-{{m.currMonth}}" ng-repeat="m in months">' +
+            '<div class="month month-{{$index+1}} month-{{m.currYear}}-{{m.currMonth}}" ng-repeat="m in months track by $index">' +
               '<div class="month-name">{{m.currMonthName}} <span class="month-year">{{m.currYear}}</span></div>' +
               '<div class="days">' +
 
                 '<ul class="day-names">' +
-                    '<li ng-repeat="l in dayLabels track by $index" ng-class="{\'is-weekend\': $first || $last}">' +
-                      '<span class="day-name">{{l}}</span>' +
+                    '<li ng-repeat="n in dayNames track by $index" ng-class="{\'is-weekend\': $first || $last}">' +
+                      '<span class="day-name">{{n}}</span>' +
                     '</li>' +
                 '</ul>' +
 
                 '<ul class="month-days">' +
-                    '<li ng-repeat="d in m.prevDays" class="day-in-prev-month" data-date="{{d.date}}" ng-class="setClass(d)">' +
-                      '<div class="date" title="{{d.date}}">{{d.num}}</div>' +
+                    '<li ng-repeat="d in m.prevDays track by $index" tap="setDate(d.date)" xdata-date="{{d.date}}" class="day-in-prev-month" ng-class="setClass(d)">' +
+                      '<div class="date">{{d.num}}</div>' +
                     '</li>' +
-                    '<li ng-repeat="d in m.currDays" class="day-in-curr-month" data-date="{{d.date}}" ng-class="setClass(d)">' +
-                      '<div class="date" title="{{d.date}}">{{d.num}}</div>' +
+                    '<li ng-repeat="d in m.currDays track by $index" tap="setDate(d.date)" xdata-date="{{d.date}}" class="day-in-curr-month" ng-class="setClass(d)">' +
+                      '<div class="date">{{d.num}}</div>' +
                     '</li>' +
-                    '<li ng-repeat="d in m.nextDays" class="day-in-next-month" data-date="{{d.date}}" ng-class="setClass(d)">' +
-                      '<div class="date" title="{{d.date}}">{{d.num}}</div>' +
+                    '<li ng-repeat="d in m.nextDays track by $index" tap="setDate(d.date)" xdata-date="{{d.date}}" class="day-in-next-month" ng-class="setClass(d)">' +
+                      '<div class="date">{{d.num}}</div>' +
                     '</li>' +
                 '</ul>' +
 
@@ -146,82 +168,53 @@
             '</div>' +
 
           '</div>' +
-          '<div class="toggle"></div>' +
+          '<div class="toggle" tap="toggle()"></div>' +
         '</div>' +
       '',
 
       link: function(scope, element) {
-        var days = [];
-        var hammerDays = [];
-        var xPos = 0;
-        var dir;
-        var prevSnapKey = 1;
-        var today = $moment().format(dFormat);
+        var signature = scope.config.prefix || 'date-swiper';
         var swiper = $angular.element(element[0]);
         var carousel = $angular.element(element[0].querySelector('.carousel'));
-        var toggle = $angular.element(element[0].querySelector('.toggle'));
-        var signature = scope.config.prefix || 'date-swiper';
+        var hammerSwiper = new Hammer(swiper[0]);
+        var dir;
+        var xPos = 0;
         var _snaps = [
           {key: 0, value: 0 },
           {key: 1, value: -100 },
           {key: 2, value: -200 }
         ];
 
+        var _monthMover = function(snap){
+          var _c = scope.months[snap.key];
+          carousel.removeClass('dragging').addClass('animate').css({transform: 'translate3d(' + snap.value + 'vw, 0, 0)'});
+          // center active date, regenerate calendars
+          if(snap.key !== 1) {
+            $timeout(function(){
+              scope.months = _generateMonths($moment([_c.currYear, _c.currMonth-1]).valueOf());
+              scope.snap = _snaps[1];
+              carousel.removeClass('animate').css({transform: 'translate3d(' + scope.snap.value + 'vw, 0, 0)'});
+            }, 300);
+          }
+        };
+
         // STUFF ON SCOPE
-        // ---------------------------------------------------------------------
-
-        var _tryFuzzyDates = function(date){
-          if(date === 'today') {
-            date = today;
-          }
-          if(date === 'tomorrow') {
-            date = $moment(today).add(1, 'day');
-          }
-          if(date === 'yesterday') {
-            date = $moment(today).subtract(1, 'day');
-          }
-          return date;
-        };
-
-        // When a user clicks on the date make it "active"
-        var setActiveDate = function(date) {
-          scope.date = $moment(date).isValid() ? $moment(date).format(dFormat) : _tryFuzzyDates(date);
-          $rootScope.$emit(signature + ':date', scope.date);
-        };
-
-        var _bindHammerDays = function(){
-          days = $angular.element(element[0].querySelectorAll('.month-days li'));
-          _.each(days, function(day, i){
-            // window.console.log('binding', i);
-            hammerDays[i] = new Hammer(day, {});
-            hammerDays[i].on('tap', function(e) {
-              // window.console.log('TAP:', e.target.dataset.date);
-              setActiveDate(e.target.dataset.date);
-              scope.$apply();
-            });
-          });
-        };
-
-        var _unbindHammerDays = function(){
-          days = $angular.element(element[0].querySelectorAll('.month-days li'));
-          _.each(days, function(day, i){
-            // window.console.log('unbinding', i);
-            hammerDays[i].destroy();
-          });
-          scope.$apply();
-        };
-
-        var init = function() {
-          scope.bound = [];
-          scope.dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-          scope.months = _generateMonths(scope.date);
-          scope.snap = _snaps[1];
-
-          carousel.addClass('animate').css({transform: 'translate3d(' + scope.snap.value + 'vw, 0, 0)'});
-
-          $timeout(function(){
-            _bindHammerDays();
-          }, 10);
+        // user clicks date to make it "active"
+        scope.setDate = function(date){
+          date = _tryFuzzyDates(date);
+          date = $moment(date).isValid() ? $moment(date).format(dFormat) : null;
+          scope.$emit(signature + ':date', date);
+          scope.months = _generateMonths($moment(date).valueOf());
+          // var a = $moment(date).month()+1;
+          // var b = $moment(scope.prevDate).month()+1;
+          // scope.prevDate = date;
+          // window.console.log('tap', 'prev:', a, scope.prevDate, 'curr:', b, date, scope.snap);
+          // // determine if date is before or after scope.date
+          // if(a < b){
+          //   scope.snap = _snaps[0];
+          //   scope.date = date;
+          // }
+          _monthMover(scope.snap);
         };
 
         // Calculate the classes for the calendar items.
@@ -239,84 +232,46 @@
           return classes.join(' ');
         };
 
-        // HAMMER TIME
-        // ---------------------------------------------------------------------
-        var hammerToggle = new Hammer(toggle[0], {});
-        var hammerSwiper = new Hammer(swiper[0], {threshold: 0});
-
-        hammerToggle.on('tap', function() {
+        scope.toggle = function() {
           scope.config.show = !scope.config.show;
-          scope.$apply();
-        });
+        };
 
-        hammerSwiper.on('panstart', function(){
-          window.console.log('start', scope.snap.key);
-          carousel.removeClass('animate');
-          scope.$apply();
-        });
-
-        hammerSwiper.on('panleft panright', function(e) {
-          xPos = scope.snap.value + (((parseInt(e.deltaX) / element[0].clientWidth) * 100));
+        // HAMMER TIME
+        hammerSwiper
+        .get('pan')
+        .set({direction: Hammer.DIRECTION_ALL, threshold: 0});
+        hammerSwiper
+        .on('panstart', function(){
+          carousel.addClass('dragging').removeClass('animate');
+        })
+        .on('panleft panright', function(e) {
+          dir = 'x';
+          xPos = scope.snap.value + ((parseInt(e.deltaX) / element[0].clientWidth) * 100);
           carousel.css({transform: 'translate3d(' + xPos + 'vw, 0, 0)'});
-          dir = e.type;
-          scope.$apply();
-        });
-
-
-
-
-
-
-
-
-
-
-
-        hammerSwiper.on('panend', function() {
-          prevSnapKey = scope.snap.key;
-
-          scope.snap = _calculateSnapPoint(xPos);
-          var _c = scope.months[scope.snap.key];
-
-          carousel.addClass('animate').css({transform: 'translate3d(' + scope.snap.value + 'vw, 0, 0)'});
-
-          // unbind taps, regenerate calendars, and rebind taps
-          if(prevSnapKey !== scope.snap.key && scope.snap.key !== 1) {
-            $timeout(function(){
-                _unbindHammerDays();
-                scope.months = _generateMonths($moment([_c.currYear, _c.currMonth-1]).valueOf());
-            }, 35);
-            $timeout(function(){
-              scope.snap = _snaps[1];
-              carousel.removeClass('animate').css({transform: 'translate3d(' + scope.snap.value + 'vw, 0, 0)'});
-              _bindHammerDays();
-            }, 65);
+        })
+        .on('panup pandown', function(e) {
+          dir = 'y';
+          // swiper.css({transform: 'translate3d(0, ' + ((parseInt(e.deltaY) / element[0].clientHeight) * 100) + 'vh, 0)'});
+        })
+        .on('panend', function() {
+          if(dir === 'x') {
+            scope.snap = _calculateSnapPoint(xPos);
+            _monthMover(scope.snap);
           }
-
+          if(dir === 'y') {
+            scope.toggle();
+          }
           scope.$apply();
         });
-
-
-
-
-
-
-
-
-
-
 
         // LISTEN FOR THINGS
-        // ---------------------------------------------------------------------
         $rootScope.$on(signature + ':set', function(e, date){
-          window.console.log('SET DATE', date);
-          setActiveDate(date);
+          scope.setDate(_tryFuzzyDates(date));
         });
 
         $rootScope.$on(signature + ':show', function(e, date){
-          window.console.log('SHOW', date);
-          setActiveDate(date);
           scope.config.show = true;
+          scope.setDate(_tryFuzzyDates(date));
         });
 
         $rootScope.$on(signature + ':hide', function(){
@@ -324,19 +279,20 @@
         });
 
         // WATCH THINGS
-        // ---------------------------------------------------------------------
-        // scope.$watch('config', function(value){
-        //   return value;
-        // });
-
         scope.$watch('date', function(value){
           if(value) {
-            window.console.log('watch:', value);
             scope.date = $moment(value).isValid() ? $moment(value).format(dFormat) : value;
           }
         });
 
-        init();
+        // DO THINGS
+        var init = function(date) {
+          scope.dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+          scope.snap = _snaps[1];
+          scope.setDate(_tryFuzzyDates(date));
+        };
+
+        init(scope.date);
 
       }
     };

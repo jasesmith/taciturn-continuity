@@ -38,7 +38,8 @@
       -webkit-box-flex: 0;
       -webkit-flex: 0 0 14.285714286%;
           -ms-flex: 0 0 14.285714286%;
-              flex: 0 0 14.285714286%; }
+              flex: 0 0 14.285714286%;
+      text-align: center; }
   .date-swiper .carousel {
     display: -webkit-box;
     display: -webkit-flex;
@@ -55,16 +56,18 @@
               transition: transform 300ms ease-out; }
   .date-swiper .month {
     -webkit-box-flex: 1;
-    -webkit-flex: 1 0 100vw;
-        -ms-flex: 1 0 100vw;
-            flex: 1 0 100vw;
+    -webkit-flex: 1 0 100%;
+        -ms-flex: 1 0 100%;
+            flex: 1 0 100%;
     padding: .5em;
     position: relative; }
   .date-swiper .month-name {
     font-size: 1.2em;
     padding: .5em; }
+  .date-swiper .day-names {
+    font-size: .8em;
+    line-height: 1.5; }
   .date-swiper .days {
-    text-align: center;
     font-size: 1em;
     line-height: 2; }
   .date-swiper .date {
@@ -76,34 +79,31 @@
     pointer-events: none; }
 
 .date-swiper .toggle {
-  bottom: 1rem;
+  bottom: 1em;
   left: 50%;
   -webkit-transform: translate3d(-50%, 0, 0);
           transform: translate3d(-50%, 0, 0);
   padding: 0;
   position: absolute;
   z-index: 10;
-  height: 2.5rem;
-  width: 2.5rem;
+  height: 2.3em;
+  width: 2.3em;
   line-height: 1;
   border-radius: 100%; }
-  .date-swiper .toggle::before, .date-swiper .toggle::after {
+  .date-swiper .toggle::after {
     content: '';
     position: absolute;
     top: 50%;
     left: 50%;
-    padding: 1px .65em;
+    padding: .3em;
+    border-style: solid;
+    border-width: 0 .1em .1em 0;
     -webkit-transform-origin: center;
         -ms-transform-origin: center;
-            transform-origin: center; }
-  .date-swiper .toggle::before {
-    -webkit-transform: translate(-50%, -50%) rotate(45deg);
-        -ms-transform: translate(-50%, -50%) rotate(45deg);
-            transform: translate(-50%, -50%) rotate(45deg); }
-  .date-swiper .toggle::after {
-    -webkit-transform: translate(-50%, -50%) rotate(-45deg);
-        -ms-transform: translate(-50%, -50%) rotate(-45deg);
-            transform: translate(-50%, -50%) rotate(-45deg); }
+            transform-origin: center;
+    -webkit-transform: translate(-50%, -70%) rotate(45deg);
+        -ms-transform: translate(-50%, -70%) rotate(45deg);
+            transform: translate(-50%, -70%) rotate(45deg); }
 
 @-webkit-keyframes bgBlend {
   0% {
@@ -140,13 +140,10 @@
     opacity: .65; }
   .date-swiper .day-names {
     text-transform: uppercase;
-    font-size: .7em;
     border-top: .1em solid;
     border-bottom: .1em solid;
-    color: rgba(35, 41, 44, 0.5);
-    line-height: 1.5; }
-  .date-swiper .day-in-prev-month,
-  .date-swiper .day-in-next-month {
+    color: rgba(35, 41, 44, 0.5); }
+  .date-swiper .days li:not(.day-in-curr-month) {
     opacity: .65; }
   .date-swiper .is-today .date {
     background: rgba(35, 41, 44, 0.25); }
@@ -155,9 +152,7 @@
     color: #f3f4f5;
     box-shadow: 0 0 0 .1em; }
   .date-swiper .toggle {
-    background: rgba(35, 41, 44, 0.5);
-    color: #f3f4f5; }
-    .date-swiper .toggle::before, .date-swiper .toggle::after {
-      background: currentColor; }
+    background: rgba(35, 41, 44, 0.25);
+    color: #E2E4E6; }
 
 /*# sourceMappingURL=date-swiper.css.map */

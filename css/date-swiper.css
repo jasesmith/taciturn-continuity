@@ -125,9 +125,10 @@
   background: #23292C;
   color: #f3f4f5;
   -webkit-transform: translate3d(0%, 100%, 0);
-          transform: translate3d(0%, 100%, 0);
-  -webkit-transition: -webkit-transform 300ms ease-out;
-          transition: transform 300ms ease-out; }
+          transform: translate3d(0%, 100%, 0); }
+  .date-swiper:not(.dragging) {
+    -webkit-transition: -webkit-transform 300ms ease-out;
+            transition: transform 300ms ease-out; }
   .date-swiper.is-active {
     -webkit-transform: translate3d(0%, 0%, 0);
             transform: translate3d(0%, 0%, 0); }

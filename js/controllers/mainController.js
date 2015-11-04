@@ -6,6 +6,7 @@
 
         $scope.config = {
             prefix: 'swiper',
+            modifier: 1.5,
             show: true
         };
 

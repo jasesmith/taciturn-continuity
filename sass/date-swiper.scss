@@ -103,7 +103,9 @@
 
   // important interaction
   transform: translate3d(0%, 100%, 0);
-  transition: transform 300ms ease-out;
+  &:not(.dragging) {
+    transition: transform 300ms ease-out;
+  }
   &.is-active {
     transform: translate3d(0%, 0%, 0);
   }

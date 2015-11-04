@@ -119,11 +119,9 @@
     var _tryFuzzyDates = function(date){
       if(date === 'today') {
         date = today;
-      }
-      if(date === 'tomorrow') {
+      } else if(date === 'tomorrow') {
         date = $moment(today).add(1, 'day');
-      }
-      if(date === 'yesterday') {
+      } else if(date === 'yesterday') {
         date = $moment(today).subtract(1, 'day');
       }
       return date;
@@ -177,8 +175,9 @@
         var swiper = $angular.element(element[0]);
         var carousel = $angular.element(element[0].querySelector('.carousel'));
         var hammerSwiper = new Hammer(swiper[0]);
-        var dir;
-        var xPos = 0;
+        var d;
+        var x = 0;
+        var y = 0;
         var _snaps = [
           {key: 0, value: 0 },
           {key: 1, value: -100 },
@@ -198,37 +197,26 @@
           }
         };
 
+        var _setActiveDate = function(date){
+          date = _tryFuzzyDates(date);
+          date = $moment(date).isValid() ? $moment(date).format(dFormat) : null;
+          return date;
+        };
+
         // STUFF ON SCOPE
         // user clicks date to make it "active"
         scope.setDate = function(date){
-          date = _tryFuzzyDates(date);
-          date = $moment(date).isValid() ? $moment(date).format(dFormat) : null;
-          scope.$emit(signature + ':date', date);
-          scope.months = _generateMonths($moment(date).valueOf());
-          // var a = $moment(date).month()+1;
-          // var b = $moment(scope.prevDate).month()+1;
-          // scope.prevDate = date;
-          // window.console.log('tap', 'prev:', a, scope.prevDate, 'curr:', b, date, scope.snap);
-          // // determine if date is before or after scope.date
-          // if(a < b){
-          //   scope.snap = _snaps[0];
-          //   scope.date = date;
-          // }
+          scope.date = _setActiveDate(date);
+          scope.months = _generateMonths(scope.date);
           _monthMover(scope.snap);
         };
 
         // Calculate the classes for the calendar items.
         scope.setClass = function(day) {
           var classes = [];
-          if (day.date === scope.date) {
-            classes.push('is-selected');
-          }
-          if (day.date === today) {
-            classes.push('is-today');
-          }
-          if(day.weekday === 0 || day.weekday === 6) {
-            classes.push('is-weekend');
-          }
+          if (day.date === scope.date) {classes.push('is-selected');}
+          if (day.date === today) {classes.push('is-today');}
+          if(day.weekday === 0 || day.weekday === 6) {classes.push('is-weekend');}
           return classes.join(' ');
         };
 
@@ -240,25 +228,30 @@
         hammerSwiper
         .get('pan')
         .set({direction: Hammer.DIRECTION_ALL, threshold: 0});
+
         hammerSwiper
         .on('panstart', function(){
           carousel.addClass('dragging').removeClass('animate');
+          swiper.addClass('dragging');
         })
-        .on('panleft panright', function(e) {
-          dir = 'x';
-          xPos = scope.snap.value + ((parseInt(e.deltaX) / element[0].clientWidth) * 100);
-          carousel.css({transform: 'translate3d(' + xPos + 'vw, 0, 0)'});
-        })
-        .on('panup pandown', function(e) {
-          dir = 'y';
-          // swiper.css({transform: 'translate3d(0, ' + ((parseInt(e.deltaY) / element[0].clientHeight) * 100) + 'vh, 0)'});
+        .on('panleft panright panup pandown', function(e) {
+          d = Math.abs(parseInt(e.deltaX)) > Math.abs(parseInt(e.deltaY)) ? 'x' : 'y';
+          x = scope.snap.value + ((parseInt(e.deltaX) / element[0].clientWidth) * 100 * scope.mod);
+          y = ((parseInt(e.deltaY) / element[0].clientHeight) * 100 * scope.mod);
+          y = y < 0 ? 0 : y;
+          if(d === 'x') {
+            carousel.css({transform: 'translate3d(' + x + 'vw, 0, 0)'});
+          } else {
+            swiper.css({transform: 'translate3d(0, ' + y + 'vh, 0)'});
+          }
         })
         .on('panend', function() {
-          if(dir === 'x') {
-            scope.snap = _calculateSnapPoint(xPos);
+          swiper.removeClass('dragging').css({transform: ''});
+          if(d === 'x') {
+            scope.snap = _calculateSnapPoint(x);
             _monthMover(scope.snap);
           }
-          if(dir === 'y') {
+          if(d === 'y' && y > 35) {
             scope.toggle();
           }
           scope.$apply();
@@ -266,12 +259,12 @@
 
         // LISTEN FOR THINGS
         $rootScope.$on(signature + ':set', function(e, date){
-          scope.setDate(_tryFuzzyDates(date));
+          scope.setDate(date);
         });
 
         $rootScope.$on(signature + ':show', function(e, date){
           scope.config.show = true;
-          scope.setDate(_tryFuzzyDates(date));
+          scope.setDate(date);
         });
 
         $rootScope.$on(signature + ':hide', function(){
@@ -280,16 +273,15 @@
 
         // WATCH THINGS
         scope.$watch('date', function(value){
-          if(value) {
-            scope.date = $moment(value).isValid() ? $moment(value).format(dFormat) : value;
-          }
+            return ($moment(value).isValid() ? $moment(value).format(dFormat) : value);
         });
 
         // DO THINGS
         var init = function(date) {
           scope.dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+          scope.mod = parseFloat(scope.config.modifier) < 0.75 ? 0.75 : parseFloat(scope.config.modifier);
           scope.snap = _snaps[1];
-          scope.setDate(_tryFuzzyDates(date));
+          scope.setDate(date);
         };
 
         init(scope.date);

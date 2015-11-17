@@ -16,7 +16,11 @@
   right: 0;
   bottom: 0;
   font-size: 5vmin;
-  font-family: "DIN Alternate", sans-serif; }
+  font-family: "DIN Alternate", sans-serif;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none; }
   .date-swiper ul {
     padding: 0;
     margin: 0;
@@ -63,7 +67,7 @@
     position: relative; }
   .date-swiper .month-name {
     font-size: 1.2em;
-    padding: .5em; }
+    padding: .5em 0; }
   .date-swiper .day-names {
     font-size: .8em;
     line-height: 1.5; }
